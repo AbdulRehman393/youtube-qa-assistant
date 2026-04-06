@@ -1,76 +1,75 @@
 # 🎬 YouTube Q&A Assistant — AI-Powered Video Intelligence
 
-Chat with any YouTube video like it’s a document.
+Paste any YouTube link and instantly **chat with the video content** — powered by a **RAG (Retrieval-Augmented Generation)** pipeline that grounds responses in the video transcript.
 
-Just paste a YouTube link, the app extracts the transcript, builds a **RAG (Retrieval-Augmented Generation)** knowledge base using embeddings + vector search, and lets you ask questions that are **grounded in the transcript** — reducing hallucinations and keeping answers relevant.
-
----
-
-## ✨ What You Can Do
-
-- **💬 Smart Q&A (Chat with the video)**  
-  Ask anything about the content and get transcript-grounded answers.
-- **📝 Auto Summary**  
-  Generate a structured, comprehensive summary of the full video.
-- **🎯 Key Takeaways**  
-  Instantly extract the main points as bullet insights.
-- **💡 Topics Extraction**  
-  List the different topics discussed with brief descriptions.
-- **🌍 Multi-Language Transcript Support**  
-  Attempts transcripts in a preferred order (e.g., English, Hindi, Urdu, Arabic, etc.), and falls back to any available captions.
-- **⚡ Semantic Search with Vector DB**  
-  Uses **ChromaDB** + **MiniLM embeddings** for similarity-based retrieval.
+**No hallucinations. No guessing. Just accurate, transcript-based answers.**
 
 ---
 
-## 🧠 How It Works (RAG Pipeline)
+## ✨ Highlights
 
-**YouTube URL → Transcript Extraction → Chunking → Embeddings → Vector Store (ChromaDB) → Retrieval → LLM Answer**
-
-Core logic:
-- Transcript is fetched from YouTube captions (including auto captions if available)
-- Transcript is chunked using a recursive splitter
-- Chunks are embedded with **`all-MiniLM-L6-v2`**
-- ChromaDB stores embeddings locally (`./chroma_db`)
-- User questions retrieve top-k relevant chunks
-- The LLM answers using the retrieved transcript context
+- 💬 **Smart Q&A** — ask questions about any part of the video
+- 📝 **Auto Summaries** — generate a well-structured full summary
+- 🎯 **Key Takeaways** — extract main points as bullets
+- 💡 **Topic Discovery** — list topics discussed with short descriptions
+- 🌍 **Multi-language transcripts** — English, Urdu, Hindi, Arabic & more (falls back to any available captions)
+- ⚡ **Semantic Search** — ChromaDB + MiniLM embeddings for fast relevant retrieval
 
 ---
 
-## 🖥️ Demo / Screenshots
+## 🖼️ Screenshots
 
-Add your screenshots here (already present in the repo):
+![Screenshot 1](images/01_image.png)
+![Screenshot 2](images/02_image.png)
+![Screenshot 3](images/03_image.png)
+![Screenshot 4](images/04_image.png)
 
-- `images/01_image.png`
-- `images/02_image.png`
-- `images/03_image.png`
-- `images/04_image.png`
+---
 
-> Tip: You can embed them like:
-> `![App Screenshot](images/01_image.png)`
+## 🧠 How It Works (RAG Flow)
+
+**YouTube URL → Transcript Extraction → Chunking → Embeddings → Chroma Vector DB → Retrieval → LLM Answer**
+
+1. The app extracts the YouTube transcript (captions / auto-captions if available).
+2. Transcript is split into overlapping chunks for better retrieval.
+3. Each chunk is embedded using **HuggingFace MiniLM (`all-MiniLM-L6-v2`)**.
+4. Embeddings are stored in **ChromaDB** (`./chroma_db`).
+5. On each question, the app retrieves the most relevant chunks (`top-k`).
+6. The LLM answers using **only retrieved transcript context** (and responds honestly if info isn’t present).
 
 ---
 
 ## 🧰 Tech Stack
 
-- **Streamlit** — interactive web app UI  
-- **LangChain** — RAG orchestration + prompt chaining  
-- **ChromaDB** — vector database for semantic retrieval  
-- **HuggingFace MiniLM (`all-MiniLM-L6-v2`)** — embeddings  
-- **OpenRouter** — LLM gateway (supports Gemini, GPT, Claude, Llama, etc.)
+- **Streamlit** — UI + chat experience
+- **LangChain** — RAG orchestration, prompt chaining, chat history
+- **ChromaDB** — vector database for semantic retrieval
+- **HuggingFace Embeddings** — `all-MiniLM-L6-v2`
+- **OpenRouter** — LLM provider gateway (Gemini / GPT / Claude / Llama / etc.)
 - **YouTube Transcript API** — transcript extraction
 
 ---
 
-## ⚙️ Setup & Run Locally
+## 📁 Project Structure
 
-### 1) Clone the repository
+- `app.py` — Streamlit UI (video input, quick actions, chat experience)
+- `transcript_loader.py` — extracts video ID + fetches transcript (multi-language fallback)
+- `rag_pipeline.py` — chunking, embeddings, ChromaDB vector store, conversational RAG chain, summarizer
+- `config.py` — app + model + RAG configuration
+- `requirements.txt` — dependencies
+- `images/` — screenshots used in the README
+
+---
+
+## ⚙️ Setup (Local)
+
+### 1) Clone the repo
 ```bash
 git clone https://github.com/AbdulRehman393/youtube-qa-assistant.git
 cd youtube-qa-assistant
 ```
 
-### 2) Create a virtual environment (recommended)
+### 2) Create & activate a virtual environment (recommended)
 ```bash
 python -m venv .venv
 # Windows:
@@ -84,74 +83,90 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4) Configure environment variables
+### 4) Add environment variables
 
 Create a `.env` file (you can copy from `.env.example`):
-
 ```bash
 cp .env.example .env
 ```
 
-Then set:
+Then add your OpenRouter API key:
 ```env
-OPENROUTER_API_KEY=your_openrouter_key_here
+OPENROUTER_API_KEY=your_openrouter_api_key_here
 # Optional:
 LLM_MODEL=google/gemini-2.0-flash-001
 ```
 
-### 5) Run the app
+### 5) Run the Streamlit app
 ```bash
 streamlit run app.py
 ```
 
 ---
 
-## 🔧 Configuration (Defaults)
+## 🤖 Model Selection (In-App)
 
-In `config.py`:
-- Chunking: `CHUNK_SIZE = 1000`, `CHUNK_OVERLAP = 200`
-- Retrieval: `RETRIEVER_K = 5`
-- Embeddings: `all-MiniLM-L6-v2`
-- Vector store: `./chroma_db` (re-created per processed video)
-
----
-
-## 🤖 Model Selection (Inside the App)
-
-The UI allows choosing models like:
+From the sidebar you can switch models such as:
 - `google/gemini-2.0-flash-001` (default)
 - `openai/gpt-4o-mini`, `openai/gpt-4o`
 - `anthropic/claude-3.5-sonnet`
 - `meta-llama/llama-3-70b-instruct`
 - `mistralai/mistral-large`
 
+> The selected model updates `config.LLM_MODEL` at runtime inside the Streamlit session.
+
+---
+
+## 🔧 Configuration
+
+Key defaults from `config.py`:
+
+- **Chunk size**: `1000`
+- **Chunk overlap**: `200`
+- **Retriever top-k**: `5`
+- **Embeddings**: `all-MiniLM-L6-v2`
+- **Chroma persistence**: `./chroma_db`
+- **Collection name**: `youtube_transcripts`
+
 ---
 
 ## 🛡️ Notes / Limitations
 
-- Works best when the YouTube video has **captions** (manual or auto-generated).
-- Private videos or videos without transcripts may fail to process.
-- This project rebuilds the local Chroma DB each time a new video is processed.
+- Works best with **public YouTube videos that have captions** (manual or auto-generated).
+- If a video has no transcript available, processing will fail.
+- The vector DB folder (`./chroma_db`) is **recreated** when processing a new video.
 
 ---
 
-## 📌 Project Motivation
+## 🚀 LinkedIn Caption (Project Intro)
 
-This project is built to practice and demonstrate:
-- RAG systems (retrieval + grounded generation)
-- Vector embeddings + semantic search
-- LLM orchestration using LangChain
-- Building a clean AI product UI with Streamlit
+**Introducing YouTube Q&A Assistant — AI-Powered Video Intelligence.**
+
+Paste any YouTube link and instantly chat with the video content, powered by a RAG engine that grounds every answer directly in the transcript.
+
+No hallucinations. No guessing. Just precise, sourced answers.
+
+**How it works:**
+YouTube link → Transcript extracted → RAG engine processes it → You get accurate, grounded answers
+
+**Key Features:**
+- Smart Q&A
+- Auto-Summaries
+- Multi-Language
+- Semantic Search (ChromaDB + MiniLM)
+
+**Built With:** LangChain · ChromaDB · Streamlit · OpenRouter LLMs · HuggingFace MiniLM · YouTube Transcript API
 
 ---
 
 ## 📄 License
 
-No license file is currently included. If you want, I can format and suggest the best license (MIT is common for projects like this).
+No license file is currently included.  
+If you want, I can add a recommended license (commonly **MIT**) and update the README accordingly.
 
 ---
 
-## 🙌 Author
+## 👤 Author
 
 **Abdul Rehman**  
 GitHub: `@AbdulRehman393`
