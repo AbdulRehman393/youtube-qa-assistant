@@ -1,0 +1,21 @@
+# Environment
+.env
+venv/
+.venv/
+
+# ChromaDB
+chroma_db/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
