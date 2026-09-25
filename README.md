@@ -161,7 +161,9 @@ YouTube link → Transcript extracted → RAG engine processes it → You get ac
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+[![MIT License](https://img.shields.io/badge/LICENSE-MIT-2ea44f?style=for-the-badge)](LICENSE)
+
+This project is licensed under the MIT License.
 
 ---
 
