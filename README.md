@@ -161,8 +161,7 @@ YouTube link → Transcript extracted → RAG engine processes it → You get ac
 
 ## 📄 License
 
-No license file is currently included.  
-If you want, I can add a recommended license (commonly **MIT**) and update the README accordingly.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
